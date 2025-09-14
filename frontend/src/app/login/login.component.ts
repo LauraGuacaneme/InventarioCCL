@@ -1,4 +1,3 @@
-// src/app/login/login.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -13,23 +12,8 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  template: `
-    <div class="login-container">
-      <h2>Iniciar Sesión</h2>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <input type="text" formControlName="username" placeholder="Usuario" />
-        <input type="password" formControlName="password" placeholder="Contraseña" />
-        <button type="submit" [disabled]="loginForm.invalid">Ingresar</button>
-      </form>
-      <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-    </div>
-  `,
-  styles: [`
-    .login-container { max-width: 300px; margin: auto; padding: 20px; }
-    input { display: block; margin: 10px 0; padding: 8px; width: 100%; }
-    button { width: 100%; padding: 10px; }
-    .error { color: red; margin-top: 10px; }
-  `]
+  templateUrl: './login.component.html', 
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   errorMessage = '';
@@ -57,7 +41,7 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.auth.login(this.loginForm.value as any).subscribe({
-        next: () => this.router.navigate(['/productos']), // Redirige a productos tras login
+        next: () => this.router.navigate(['/inventario']), // Redirige a productos tras login
         error: () => this.errorMessage = 'Credenciales inválidas'
       });
     }

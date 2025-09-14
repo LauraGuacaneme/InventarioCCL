@@ -1,4 +1,3 @@
-// src/app/interceptors/jwt.interceptor.ts
 import { HttpInterceptorFn } from '@angular/common/http';
 
 /**

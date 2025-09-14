@@ -1,0 +1,43 @@
+// Variables
+$primary-color: #1976d2;
+$danger-color: #e53935;
+
+// Navbar principal
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $primary-color;
+  padding: 10px 20px;
+  color: white;
+
+  .nav-left {
+    display: flex;
+
+    .nav-link {
+      margin-right: 15px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .nav-right {
+    .logout-btn {
+      background-color: $danger-color;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken($danger-color, 10%);
+      }
+    }
+  }
+}

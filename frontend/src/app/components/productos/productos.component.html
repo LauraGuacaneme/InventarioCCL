@@ -1,0 +1,48 @@
+<div class="productos-container">
+  <h2>Gestión de Productos</h2>
+
+  <!-- Lista de productos -->
+  <table class="productos-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Cantidad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of productos">
+        <td>{{ producto.id }}</td>
+        <td *ngIf="editando?.id !== producto.id">{{ producto.nombre }}</td>
+        <td *ngIf="editando?.id === producto.id">
+          <input [(ngModel)]="editando!.nombre" />
+        </td>
+
+        <td *ngIf="editando?.id !== producto.id">{{ producto.cantidad }}</td>
+        <td *ngIf="editando?.id === producto.id">
+          <input type="number" [(ngModel)]="editando!.cantidad" />
+        </td>
+
+        <td>
+          <ng-container *ngIf="editando?.id !== producto.id; else edicion">
+            <button (click)="editarProducto(producto)">Editar</button>
+            <button (click)="eliminarProducto(producto.id)">Eliminar</button>
+          </ng-container>
+          <ng-template #edicion>
+            <button (click)="guardarEdicion()">Guardar</button>
+            <button (click)="cancelarEdicion()">Cancelar</button>
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Formulario de nuevo producto -->
+  <div class="form-nuevo">
+    <h3>Agregar nuevo producto</h3>
+    <input [(ngModel)]="nuevoProducto.nombre" placeholder="Nombre" />
+    <input type="number" [(ngModel)]="nuevoProducto.cantidad" placeholder="Cantidad" />
+    <button (click)="agregarProducto()">Agregar</button>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../services/product.service';
+import { ProductosService } from '../../services/producto.service';
 
 /**
  * Componente de Inventario
@@ -17,7 +17,7 @@ export class InventarioComponent implements OnInit {
   productos: any[] = [];  // Array que almacenará los productos obtenidos del backend
   cargando: boolean = false; // indicador de carga
 
-  constructor(private productService: ProductService) { }
+  constructor(private productoService: ProductosService) { }
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -28,7 +28,7 @@ export class InventarioComponent implements OnInit {
    */
   cargarProductos(): void {
     this.cargando = true;
-    this.productService.getInventario().subscribe({
+    this.productoService.getInventario().subscribe({
       next: (data) => {
         this.productos = data;
         this.cargando = false;

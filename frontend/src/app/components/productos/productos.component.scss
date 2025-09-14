@@ -1,0 +1,51 @@
+.productos-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.productos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #1976d2;
+    color: white;
+  }
+
+  button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+}
+
+.form-nuevo {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  input {
+    padding: 5px;
+  }
+
+  button {
+    background-color: #43a047;
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: darken(#43a047, 10%);
+    }
+  }
+}

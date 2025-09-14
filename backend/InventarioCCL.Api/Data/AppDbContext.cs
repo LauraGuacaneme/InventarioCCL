@@ -6,12 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventarioCCL.Api.Data
 {
+    /// <summary>
+    /// Contexto de base de datos que maneja las entidades con Entity Framework Core.
+    /// </summary>
     public class AppDbContext : DbContext
     {
         // Constructor estándar con DbContextOptions inyectadas por DI
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // DbSet de productos
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Producto> Productos { get; set; }
     }
 }

@@ -1,0 +1,17 @@
+# Angular
+/node_modules
+/dist
+/.angular
+/.vscode
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.dbmdl
+
+# Sistema
+*.log
+*.DS_Store
+Thumbs.db

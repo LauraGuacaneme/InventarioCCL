@@ -1,6 +1,5 @@
 // TokenService.cs
 // Implementación simple del servicio de tokens JWT usando clave simétrica (HMAC-SHA256).
-// NOTA: En producción usar almacén seguro para claves y políticas más estrictas.
 
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

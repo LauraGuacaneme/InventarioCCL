@@ -14,8 +14,8 @@ namespace InventarioCCL.Api.Controllers
     {
         private readonly ITokenService _tokenService;
 
-        // Credenciales fijas (en memoria) solicitadas por la prueba técnica.
-        // En un escenario real, estas vendrían de una tabla de usuarios y con password hashed.
+        // Credenciales fijas.
+        // En un escenario real, vienen de una tabla de usuarios y con password hashed.
         private readonly string _fixedUser = "admin";
         private readonly string _fixedPass = "P@ssw0rd";
 

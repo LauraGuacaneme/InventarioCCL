@@ -1,0 +1,108 @@
+@import '../../../styles/variables.scss';
+
+.login-container-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: $background-color;
+}
+
+.login-container {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    color: $primary-color;
+  }
+
+  hr {
+    width: 50%;
+    margin: 10px auto 30px auto;
+    border: 0;
+    border-top: 2px solid $primary-color;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+
+    .form-group {
+      position: relative;
+      margin-bottom: 40px;
+
+      input {
+        width: 95%;
+        padding: 12px 12px 12px 12px;
+        font-size: 1rem;
+        border: 1px solid $input-border;
+        border-radius: 6px;
+        background: none;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px $input-focus-shadow;
+        }
+      }
+
+      label {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        color: #999;
+        pointer-events: none;
+        transition: 0.2s ease all;
+      }
+
+      input:focus + label,
+      input:not(:placeholder-shown) + label {
+        top: -10px;
+        left: 8px;
+        font-size: 0.8rem;
+        color: $primary-color;
+        background-color: #fff;
+        padding: 0 4px;
+      }
+    }
+
+    button {
+      width: 40%;
+      align-self: center;
+      padding: 12px;
+      font-size: 1rem;
+      background-color: lighten($primary-color, 30%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+
+      &:disabled {
+        background-color:$primary-color ;
+        cursor: not-allowed;
+      }
+    }
+
+    .error {
+      color: $error-color;
+      font-weight: 500;
+      text-align: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+  }
+}

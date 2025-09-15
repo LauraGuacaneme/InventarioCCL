@@ -1,14 +1,24 @@
+<h2>Gestión de productos</h2>
+
 <mat-card>
+  <!-- Subtítulo dinámico -->
+  <h3>{{ form.get('id')?.value ? 'Editar Producto' : 'Agregar Producto' }}</h3>
+
   <form [formGroup]="form" (ngSubmit)="guardarProducto()">
     <mat-form-field appearance="fill">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="nombre">
     </mat-form-field>
+
     <mat-form-field appearance="fill">
       <mat-label>Cantidad</mat-label>
       <input matInput type="number" formControlName="cantidad">
     </mat-form-field>
-    <button mat-raised-button color="primary" type="submit" (click)="guardarProducto()">Guardar</button>
+
+    <!-- Botón dinámico -->
+    <button mat-raised-button color="primary" type="submit">
+      {{ form.get('id')?.value ? 'Actualizar' : 'Guardar' }}
+    </button>
   </form>
 </mat-card>
 
@@ -19,6 +29,7 @@
   </mat-form-field>
 
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <!-- Columnas como ya las tienes -->
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
       <td mat-cell *matCellDef="let element">{{element.id}}</td>
@@ -37,8 +48,12 @@
     <ng-container matColumnDef="acciones">
       <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="accent" (click)="editarProducto(element)"><mat-icon>edit</mat-icon></button>
-        <button mat-icon-button color="warn" (click)="eliminarProducto(element.id)"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button color="accent" (click)="editarProducto(element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="eliminarProducto(element.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </td>
     </ng-container>
 

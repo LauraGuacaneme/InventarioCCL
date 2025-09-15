@@ -17,6 +17,14 @@ builder.Services.AddControllers();               // Controladores MVC / API
 builder.Services.AddEndpointsApiExplorer();      // Para OpenAPI/Swagger
 builder.Services.AddSwaggerGen();                // Generar UI de Swagger (solo dev)
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy => policy
+            .WithOrigins("http://localhost:4200") // origen permitido
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 // -----------------------
 // DbContext - PostgreSQL
 // -----------------------
@@ -60,6 +68,9 @@ builder.Services.AddAuthentication(options =>
 // Construir la app
 // -----------------------
 var app = builder.Build();
+
+// --- Usar CORS ---
+app.UseCors("AllowAngularApp");
 
 // -----------------------
 // Crear DB (EnsureCreated) y seed de datos mínimos

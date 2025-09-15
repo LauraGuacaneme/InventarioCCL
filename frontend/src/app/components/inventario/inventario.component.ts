@@ -1,42 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Producto } from '../../models/producto.model';
 import { ProductosService } from '../../services/producto.service';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
 
-/**
- * Componente de Inventario
- * Permite consultar el estado actual del inventario
- */
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.scss'],
-  imports: [CommonModule]
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule
+  ]
 })
 export class InventarioComponent implements OnInit {
+  productos: Producto[] = [];   // Lista de productos obtenidos del backend
+  dataSource!: MatTableDataSource<Producto>;    // Fuente de datos para la tabla de Angular Material
+  displayedColumns: string[] = ['id', 'nombre', 'cantidad'];
+  searchTerm: string = '';
 
-  productos: any[] = [];  // Array que almacenará los productos obtenidos del backend
-  cargando: boolean = false; // indicador de carga
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private productoService: ProductosService) { }
+  constructor(private productService: ProductosService) {}
 
   ngOnInit(): void {
-    this.cargarProductos();
+    this.productService.getInventario().subscribe(data => {
+      this.productos = data;
+      this.dataSource = new MatTableDataSource(this.productos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    });
   }
 
-  /**
-   * Llama al servicio para obtener los productos y los asigna al array local
-   */
-  cargarProductos(): void {
-    this.cargando = true;
-    this.productoService.getInventario().subscribe({
-      next: (data) => {
-        this.productos = data;
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar inventario:', err);
-        this.cargando = false;
-      }
-    });
+  applyFilter() {
+    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
   }
 }

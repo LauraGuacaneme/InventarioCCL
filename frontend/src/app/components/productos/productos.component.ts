@@ -1,74 +1,158 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ProductosService } from '../../services/producto.service';
 import { Producto } from '../../models/producto.model';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-productos',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './productos.component.html',
-  styleUrls: ['./productos.component.scss']
+  styleUrls: ['./productos.component.scss'],
+  standalone: true, // Indica que es un componente independiente sin AppModule
+  imports: [       
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatIconModule
+  ]
 })
 export class ProductosComponent implements OnInit {
   productos: Producto[] = [];
-  nuevoProducto: Partial<Producto> = {};
-  editando: Producto | null = null;
+  dataSource!: MatTableDataSource<Producto>;  // Fuente de datos para la tabla de Angular Material
+  displayedColumns: string[] = ['id', 'nombre', 'cantidad', 'acciones'];
+  form!: FormGroup;   // Formulario reactivo para agregar/editar productos
+  searchTerm: string = '';    // Campo de búsqueda para filtrar la tabla
 
-  constructor(private productosService: ProductosService) {}
+  // Referencias a paginador y ordenamiento de Angular Material
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private productService: ProductosService, 
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
-    this.cargarProductos();
+    // Inicializar el formulario con validaciones
+    this.form = this.fb.group({
+      id: [''],                                  // ID del producto (vacío para nuevos)
+      nombre: ['', Validators.required],        // Nombre obligatorio
+      cantidad: [0, [Validators.required, Validators.min(0)]] // Cantidad obligatoria, mínimo 0
+    });
+
+    // Cargar productos desde el backend al iniciar
+    this.loadProductos();
   }
 
-  // Obtener lista de productos
-  cargarProductos(): void {
-    this.productosService.getProductos().subscribe({
-      next: (data) => (this.productos = data),
-      error: (err) => console.error('Error al cargar productos', err)
+  /**
+   * Carga los productos desde el backend y configura la tabla de Angular Material
+   */
+  loadProductos() {
+    this.productService.getInventario().subscribe(data => {
+      this.productos = data;
+      this.dataSource = new MatTableDataSource(this.productos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     });
   }
 
-  // Agregar producto
-  agregarProducto(): void {
-    if (!this.nuevoProducto.nombre || this.nuevoProducto.cantidad == null) return;
-    this.productosService.addProducto(this.nuevoProducto).subscribe({
-      next: () => {
-        this.cargarProductos();
-        this.nuevoProducto = {};
-      },
-      error: (err) => console.error('Error al agregar producto', err)
-    });
+  /**
+   * Filtra los productos en la tabla según el searchTerm
+   */
+  applyFilter() {
+    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
   }
 
-  // Editar producto
-  editarProducto(producto: Producto): void {
-    this.editando = { ...producto };
-  }
+  /**
+   * Guarda un producto nuevo o actualiza uno existente
+   */
+  guardarProducto() {
+    if (this.form.invalid) return; 
 
-  guardarEdicion(): void {
-    if (!this.editando) return;
-    this.productosService.updateProducto(this.editando.id, this.editando).subscribe({
-      next: () => {
-        this.cargarProductos();
-        this.editando = null;
-      },
-      error: (err) => console.error('Error al actualizar producto', err)
-    });
-  }
+    const prod: Producto = this.form.value;
 
-  cancelarEdicion(): void {
-    this.editando = null;
-  }
-
-  // Eliminar producto
-  eliminarProducto(id: number): void {
-    if (confirm('¿Seguro que deseas eliminar este producto?')) {
-      this.productosService.deleteProducto(id).subscribe({
-        next: () => this.cargarProductos(),
-        error: (err) => console.error('Error al eliminar producto', err)
+    if (prod.id) {
+      // Actualizar producto existente
+      this.productService.updateProducto(prod.id, prod).subscribe(() => {
+        Swal.fire(
+          '¡Actualizado!',
+          'El producto ha sido actualizado.',
+          'success'
+        );
+        this.loadProductos(); // Refrescar la tabla
+      });
+    } else {
+      // Agregar producto nuevo
+      const prodAdd: Partial<Producto> = { nombre: prod.nombre, cantidad: prod.cantidad };
+      this.productService.addProducto(prodAdd).subscribe(() => {
+        Swal.fire(
+          '¡Agregado!',
+          'El producto ha sido agregado.',
+          'success'
+        );
+        this.loadProductos(); // Refrescar la tabla
       });
     }
+
+    // Resetear formulario, dejando cantidad en 0 por defecto
+    this.form.reset({ cantidad: 0 });
   }
+
+  /**
+   * Llena el formulario con los datos del producto seleccionado para editar
+   * @param p Producto a editar
+   */
+  editarProducto(p: Producto) {
+    this.form.setValue({ id: p.id, nombre: p.nombre, cantidad: p.cantidad });
+  }
+
+  /**
+   * Elimina un producto después de confirmar con SweetAlert
+   * @param id ID del producto a eliminar
+   */
+  eliminarProducto(id: number) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¡No podrás revertir esto!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productService.deleteProducto(id).subscribe(() => {
+          Swal.fire(
+            '¡Eliminado!',
+            'El producto ha sido eliminado.',
+            'success'
+          );
+          this.loadProductos(); // Refrescar la tabla
+        });
+      }
+    });
+  }
+
 }

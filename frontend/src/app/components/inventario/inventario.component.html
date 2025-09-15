@@ -1,20 +1,31 @@
-<h2>Inventario de Productos</h2>
+<mat-card>
+  <mat-form-field appearance="fill">
+    <mat-label>Buscar producto</mat-label>
+    <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()">
+  </mat-form-field>
 
-<div *ngIf="cargando">Cargando productos...</div>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <!-- ID -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let element">{{element.id}}</td>
+    </ng-container>
 
-<table *ngIf="!cargando">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th>
-      <th>Cantidad</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let p of productos">
-      <td>{{ p.id }}</td>
-      <td>{{ p.nombre }}</td>
-      <td>{{ p.cantidad }}</td>
-    </tr>
-  </tbody>
-</table>
+    <!-- Nombre -->
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let element">{{element.nombre}}</td>
+    </ng-container>
+
+    <!-- Cantidad -->
+    <ng-container matColumnDef="cantidad">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Cantidad</th>
+      <td mat-cell *matCellDef="let element">{{element.cantidad}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+</mat-card>

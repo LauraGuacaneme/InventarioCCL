@@ -1,48 +1,50 @@
-<div class="productos-container">
-  <h2>Gestión de Productos</h2>
+<mat-card>
+  <form [formGroup]="form" (ngSubmit)="guardarProducto()">
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Cantidad</mat-label>
+      <input matInput type="number" formControlName="cantidad">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" (click)="guardarProducto()">Guardar</button>
+  </form>
+</mat-card>
 
-  <!-- Lista de productos -->
-  <table class="productos-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Cantidad</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let producto of productos">
-        <td>{{ producto.id }}</td>
-        <td *ngIf="editando?.id !== producto.id">{{ producto.nombre }}</td>
-        <td *ngIf="editando?.id === producto.id">
-          <input [(ngModel)]="editando!.nombre" />
-        </td>
+<mat-card>
+  <mat-form-field appearance="fill">
+    <mat-label>Buscar producto</mat-label>
+    <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()">
+  </mat-form-field>
 
-        <td *ngIf="editando?.id !== producto.id">{{ producto.cantidad }}</td>
-        <td *ngIf="editando?.id === producto.id">
-          <input type="number" [(ngModel)]="editando!.cantidad" />
-        </td>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let element">{{element.id}}</td>
+    </ng-container>
 
-        <td>
-          <ng-container *ngIf="editando?.id !== producto.id; else edicion">
-            <button (click)="editarProducto(producto)">Editar</button>
-            <button (click)="eliminarProducto(producto.id)">Eliminar</button>
-          </ng-container>
-          <ng-template #edicion>
-            <button (click)="guardarEdicion()">Guardar</button>
-            <button (click)="cancelarEdicion()">Cancelar</button>
-          </ng-template>
-        </td>
-      </tr>
-    </tbody>
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let element">{{element.nombre}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="cantidad">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Cantidad</th>
+      <td mat-cell *matCellDef="let element">{{element.cantidad}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="accent" (click)="editarProducto(element)"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="warn" (click)="eliminarProducto(element.id)"><mat-icon>delete</mat-icon></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <!-- Formulario de nuevo producto -->
-  <div class="form-nuevo">
-    <h3>Agregar nuevo producto</h3>
-    <input [(ngModel)]="nuevoProducto.nombre" placeholder="Nombre" />
-    <input type="number" [(ngModel)]="nuevoProducto.cantidad" placeholder="Cantidad" />
-    <button (click)="agregarProducto()">Agregar</button>
-  </div>
-</div>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+</mat-card>

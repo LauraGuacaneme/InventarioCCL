@@ -4,6 +4,7 @@ using InventarioCCL.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace InventarioCCL.Api.Controllers
 {
@@ -32,7 +33,7 @@ namespace InventarioCCL.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var productos = await _context.Productos.ToListAsync();
+            var productos = await _context.Productos.OrderBy(p => p.Nombre).ToListAsync();
             return Ok(productos);
         }
 

@@ -23,7 +23,8 @@ export class ProductosService {
 
   // Obtener todos los productos
   getProductos(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(`${this.apiUrl}/inventario`);
+    console.log("ZI")
+    return this.http.get<Producto[]>(`${this.apiUrl}`);
   }
 
   // Obtener todos los productos
@@ -33,6 +34,7 @@ export class ProductosService {
 
   // Crear producto
   addProducto(producto: Partial<Producto>): Observable<Producto> {
+    console.log(producto)
     return this.http.post<Producto>(this.apiUrl, producto);
   }
 

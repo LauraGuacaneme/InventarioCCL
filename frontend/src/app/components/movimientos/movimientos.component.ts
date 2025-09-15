@@ -31,10 +31,15 @@ export class MovimientosComponent implements OnInit {
 
   ngOnInit(): void {
     // Cargar productos para el select
-    this.productosService.getProductos().subscribe({
-      next: (data) => this.productos = data,
-      error: (err) => console.error(err)
-    });
+    this.cargarProductos();
+  }
+
+  
+  cargarProductos(): void {
+  this.productosService.getProductos().subscribe({
+    next: (data) => this.productos = data,
+    error: (err) => console.error(err)
+  });
   }
 
   /**
@@ -52,10 +57,23 @@ export class MovimientosComponent implements OnInit {
       next: (res) => {
         this.mensaje = `Movimiento registrado: ${res.producto.nombre}, cantidad actual: ${res.producto.cantidad}`;
         this.form.reset({ cantidad: 0 });
+        this.cargarProductos();
       },
       error: (err) => {
-        this.mensaje = `Error: ${err.error?.message || 'No se pudo registrar el movimiento'}`;
+        console.log(err.error);
+        this.mensaje = `Error: ${err.error?.mensaje || 'No se pudo registrar el movimiento'}`;
       }
     });
+  }
+
+  // Botones para aumentar o disminuir cantidad
+  aumentarCantidad() {
+    const control = this.form.get('cantidad');
+    if (control) control.setValue(control.value + 1);
+  }
+
+  disminuirCantidad() {
+    const control = this.form.get('cantidad');
+    if (control) control.setValue(control.value - 1);
   }
 }
